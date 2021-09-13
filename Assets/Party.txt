@@ -1,0 +1,4 @@
+4,66,95,13,13,9,HeadBand|Leather|Staff
+1,124,38,12,10,7,Plate|Big Sword
+5,68,59,13,10,13,Hood|Leather|Dagger
+4,57,97,11,12,10,Leather|Short Sword

@@ -81,7 +81,7 @@ static public class AssignmentPart1
         using (StreamWriter sw = new StreamWriter(Application.dataPath+Path.DirectorySeparatorChar+"Party.txt"))
         {
             string line = "";
-            sw.WriteLine("classID,health,mana,strength,agility,wisdom,equipment");
+           // sw.WriteLine("classID,health,mana,strength,agility,wisdom,equipment");
             foreach (PartyCharacter pc in GameContent.partyCharacters)
             {
                 Debug.Log("PC class id == " + pc.classID);
@@ -102,10 +102,32 @@ static public class AssignmentPart1
 
         GameContent.partyCharacters.Clear();
 
+       
+        string path = Application.dataPath + Path.DirectorySeparatorChar + "Party.txt";
+        //Read the text from directly from the test.txt file
+        StreamReader reader = new StreamReader(path);
+        // string[] lines = System.IO.File.ReadAllLines(path);
+        string line = "";
+        while ((line = reader.ReadLine()) != null)
+        {
+            Debug.Log(line);
+            string[] elems=line.Split(',');
+            PartyCharacter pc = new PartyCharacter();
+            GameContent.partyCharacters.AddLast(pc);
+            if (elems.Length > 5)
+            {
+                pc.classID = int.Parse(elems[0]);
+                pc.health = int.Parse(elems[1]);
+                pc.mana = int.Parse(elems[2]);
+
+                pc.strength = int.Parse(elems[3]);
+                pc.agility = int.Parse(elems[4]);
+                pc.wisdom = int.Parse(elems[5]);
+            }
+           
+            //GameContent.partyCharacters.AddLast(pc);
+        }
         GameContent.RefreshUI();
-
-        //GameContent.partyCharacters.AddFirst(new PartyCharacter())
-
     }
 
 }
