@@ -1,4 +1,0 @@
-classID,health,mana,strength,agility,wisdom,equipment
-1,101,37,11,9,10,HeadBand|Plate|Short Sword
-3,40,115,6,10,12,Hood|Robes|Mace
-4,62,100,13,10,9,Cap|Leather|Short Sword
