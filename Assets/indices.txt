@@ -1,0 +1,7 @@
+1,6
+2,1,whiteFighter
+2,2,whiteFighter
+2,3,s1
+2,4,new
+2,5,f1
+2,6,f3

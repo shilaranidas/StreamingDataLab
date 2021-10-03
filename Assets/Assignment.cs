@@ -276,12 +276,27 @@ static public class AssignmentPart2
             }
         }
         sw.Close();
+        bool nameAlreadyExists = false;
+        foreach (NameAndIndex nameAndIndex in nameAndIndices)
+        {
+            if (nameAndIndex.name == GameContent.GetPartyNameFromInput())
+                nameAlreadyExists = true;
+        }
+        if (!nameAlreadyExists)
+        {
+            lastIndexUsed++;
+            nameAndIndices.AddLast(new NameAndIndex(lastIndexUsed, GameContent.GetPartyNameFromInput()));
+        }
+        else
+            Debug.Log("Name already exists. Please try another name!");
+
         GameContent.RefreshUI();
+        SaveIndexManagementFile();
     }
 
     static public void NewPartyButtonPressed()
     {
-
+        SaveIndexManagementFile();
     }
 
     static public void DeletePartyButtonPressed()
@@ -290,18 +305,13 @@ static public class AssignmentPart2
     }
     static public void SaveIndexManagementFile()
     {
-        //StreamWriter writer = new StreamWriter(path);
-        //string line;
-        //while ((line = reader.ReadLine()) != null)
-        //{
-        //    Debug.Log(line);
-        //    string[] csv = line.Split(',');
-        //    int signifire = int.Parse(csv[0]);
-        //    if (signifire == 1)
-        //        lastIndexUsed = int.Parse(csv[1]);
-        //    else if (signifire == 2)
-        //        nameAndIndices.AddLast(new NameAndIndex(int.Parse(csv[1]), csv[2]));
-        //}
+        string path = Application.dataPath + Path.DirectorySeparatorChar + IndexFilePath;
+
+        StreamWriter writer = new StreamWriter(path);
+        writer.WriteLine("1," + lastIndexUsed);
+        foreach (NameAndIndex nameAndIndex in nameAndIndices)
+            writer.WriteLine("2,"+nameAndIndex.index+"," + nameAndIndex.name);
+        writer.Close();
     }
 
 }
