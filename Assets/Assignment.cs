@@ -88,7 +88,8 @@ static public class AssignmentPart1
                 line+=pc.classID+","+pc.health+","+pc.mana+","+pc.strength+","+pc.agility+","+pc.wisdom+",";
                 foreach (int equipID in pc.equipment)
                 {
-                    line += GameContent.EquipmentID.lookUp[equipID] + "|";
+                    //line += GameContent.EquipmentID.lookUp[equipID] + "|";
+                    line += equipID.ToString() + "|";
                 }
                 line=line.Substring(0, line.Length - 1);
                 sw.WriteLine(line);
@@ -114,7 +115,7 @@ static public class AssignmentPart1
             string[] elems=line.Split(',');
             PartyCharacter pc = new PartyCharacter();
             GameContent.partyCharacters.AddLast(pc);
-            if (elems.Length > 5)
+            if (elems.Length > 6)
             {
                 pc.classID = int.Parse(elems[0]);
                 pc.health = int.Parse(elems[1]);
@@ -123,6 +124,14 @@ static public class AssignmentPart1
                 pc.strength = int.Parse(elems[3]);
                 pc.agility = int.Parse(elems[4]);
                 pc.wisdom = int.Parse(elems[5]);
+                string[] equips = elems[6].Split('|');
+                //GameContent.EquipmentID.lookUp[equips[0]];
+                //GameContent.EquipmentID.lookUp
+                for (int i = 0; i < equips.Length; i++)
+                {
+                    pc.equipment.AddLast(int.Parse( equips[i]));
+                }
+                
             }
            
             //GameContent.partyCharacters.AddLast(pc);
