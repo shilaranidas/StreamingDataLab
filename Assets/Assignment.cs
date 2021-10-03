@@ -153,7 +153,7 @@ static public class AssignmentPart1
 //  This will enable the needed UI/function calls for your to proceed with your assignment.
 static public class AssignmentConfiguration
 {
-    public const int PartOfAssignmentThatIsInDevelopment = 1;
+    public const int PartOfAssignmentThatIsInDevelopment = 2;
 }
 
 /*
@@ -191,31 +191,91 @@ Good luck, journey well.
 
 static public class AssignmentPart2
 {
-
+    const int PartyCharacterSaveDataSignifier = 0;
+    const int EquipmentSaveDataSignifier = 1;
+    static List<string> partyNames;
+    static int lastIndexUsed;
+    static LinkedList<NameAndIndex> nameAndIndices;
+    const string IndexFilePath = "indices.txt";
     static public void GameStart()
     {
+        nameAndIndices = new LinkedList<NameAndIndex>();
+        string path = Application.dataPath + Path.DirectorySeparatorChar + IndexFilePath;
+        if (File.Exists(path))
+        {
+            //Read the text from directly from the test.txt file
+            StreamReader reader = new StreamReader(path);
+            string line;
+            while ((line = reader.ReadLine()) != null)
+            {
+                Debug.Log(line);
+                string[] csv = line.Split(',');
+                int signifire = int.Parse(csv[0]);
+                if (signifire == 1)
+                    lastIndexUsed = int.Parse(csv[1]);
+                else if (signifire == 2)
+                    nameAndIndices.AddLast(new NameAndIndex(int.Parse(csv[1]), csv[2]));
+            }
+        }
 
+        partyNames = new List<string>();
+        partyNames.Add("test1");
+        partyNames.Add("test2");
+        partyNames.Add("test3");
         GameContent.RefreshUI();
 
     }
 
     static public List<string> GetListOfPartyNames()
     {
-        return new List<string>() {
-            "sample 1",
-            "sample 2",
-            "sample 3"
-        };
+        return partyNames;
 
     }
 
     static public void LoadPartyDropDownChanged(string selectedName)
     {
+        GameContent.partyCharacters.Clear();
+        string path = Application.dataPath + Path.DirectorySeparatorChar + "Party.txt";
+        //Read the text from directly from the test.txt file
+        StreamReader reader = new StreamReader(path);
+        string line = "";
+        while ((line = reader.ReadLine()) != null)
+        {
+            string[] csv = line.Split(',');
+
+            int saveDataSignifier = int.Parse(csv[0]);
+
+            if (saveDataSignifier == PartyCharacterSaveDataSignifier)
+            {
+                PartyCharacter pc = new PartyCharacter(int.Parse(csv[1]), int.Parse(csv[2]), int.Parse(csv[3]), int.Parse(csv[4]), int.Parse(csv[5]), int.Parse(csv[6]));
+                GameContent.partyCharacters.AddLast(pc);
+            }
+            else if (saveDataSignifier == EquipmentSaveDataSignifier)
+            {
+                GameContent.partyCharacters.Last.Value.equipment.AddLast(int.Parse(csv[1]));
+            }
+        }
+        reader.Close();
         GameContent.RefreshUI();
     }
 
     static public void SavePartyButtonPressed()
     {
+        // Get the directories currently on the C drive.
+        //DirectoryInfo[] cDirs = new DirectoryInfo(@"c:\").GetDirectories();
+        StreamWriter sw = new StreamWriter(Application.dataPath + Path.DirectorySeparatorChar + "Party.txt");
+        foreach (PartyCharacter pc in GameContent.partyCharacters)
+        {
+            sw.WriteLine(PartyCharacterSaveDataSignifier + "," + pc.classID + "," + pc.health + "," + pc.mana + "," + pc.strength + "," + pc.agility + "," + pc.wisdom);
+
+            Debug.Log("PC class id == " + pc.classID);
+
+            foreach (int equipID in pc.equipment)
+            {
+                sw.WriteLine(EquipmentSaveDataSignifier + "," + equipID);
+            }
+        }
+        sw.Close();
         GameContent.RefreshUI();
     }
 
@@ -228,7 +288,32 @@ static public class AssignmentPart2
     {
 
     }
+    static public void SaveIndexManagementFile()
+    {
+        //StreamWriter writer = new StreamWriter(path);
+        //string line;
+        //while ((line = reader.ReadLine()) != null)
+        //{
+        //    Debug.Log(line);
+        //    string[] csv = line.Split(',');
+        //    int signifire = int.Parse(csv[0]);
+        //    if (signifire == 1)
+        //        lastIndexUsed = int.Parse(csv[1]);
+        //    else if (signifire == 2)
+        //        nameAndIndices.AddLast(new NameAndIndex(int.Parse(csv[1]), csv[2]));
+        //}
+    }
 
+}
+public class NameAndIndex
+{
+    public string name;
+    public int index;
+    public NameAndIndex(int Index, string Name)
+    {
+        this.name = Name;
+        this.index = Index;
+    }
 }
 
 #endregion
