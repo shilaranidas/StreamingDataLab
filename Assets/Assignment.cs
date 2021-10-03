@@ -4,6 +4,7 @@ This RPG data streaming assignment was created by Fernando Restituto.
 Pixel RPG characters created by Sean Browning.
 */
 
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -193,6 +194,8 @@ static public class AssignmentPart2
 {
     const int PartyCharacterSaveDataSignifier = 0;
     const int EquipmentSaveDataSignifier = 1;
+    const int LastUsedIndexSignifier = 1;
+    const int IndexAndNameSignifier = 2;
     static List<string> partyNames;
     static int lastIndexUsed;
     static LinkedList<NameAndIndex> nameAndIndices;
@@ -211,17 +214,18 @@ static public class AssignmentPart2
                 Debug.Log(line);
                 string[] csv = line.Split(',');
                 int signifire = int.Parse(csv[0]);
-                if (signifire == 1)
+                if (signifire == LastUsedIndexSignifier)
                     lastIndexUsed = int.Parse(csv[1]);
-                else if (signifire == 2)
+                else if (signifire == IndexAndNameSignifier)
                     nameAndIndices.AddLast(new NameAndIndex(int.Parse(csv[1]), csv[2]));
             }
         }
 
         partyNames = new List<string>();
-        partyNames.Add("test1");
-        partyNames.Add("test2");
-        partyNames.Add("test3");
+        foreach (NameAndIndex nameAndIndex in nameAndIndices)
+        {
+            partyNames.Add(nameAndIndex.name);
+        }
         GameContent.RefreshUI();
 
     }
@@ -261,9 +265,36 @@ static public class AssignmentPart2
 
     static public void SavePartyButtonPressed()
     {
+      
+        bool nameAlreadyExists = false;
+        foreach (NameAndIndex nameAndIndex in nameAndIndices)
+        {
+            if (nameAndIndex.name == GameContent.GetPartyNameFromInput())
+            { 
+                nameAlreadyExists = true;
+                string fileName = Application.dataPath + Path.DirectorySeparatorChar +nameAndIndex.index +".txt";
+                SaveParty(fileName);
+            }
+        }
+        if (!nameAlreadyExists)
+        {
+            lastIndexUsed++;
+            string fileName = Application.dataPath + Path.DirectorySeparatorChar + lastIndexUsed + ".txt";
+            SaveParty(fileName);
+            nameAndIndices.AddLast(new NameAndIndex(lastIndexUsed, GameContent.GetPartyNameFromInput()));
+        }
+        else
+            Debug.Log("Name already exists. Please try another name!");
+
+        GameContent.RefreshUI();
+        SaveIndexManagementFile();
+    }
+
+    public static void SaveParty(string fileName)
+    {
         // Get the directories currently on the C drive.
         //DirectoryInfo[] cDirs = new DirectoryInfo(@"c:\").GetDirectories();
-        StreamWriter sw = new StreamWriter(Application.dataPath + Path.DirectorySeparatorChar + "Party.txt");
+        StreamWriter sw = new StreamWriter(fileName);
         foreach (PartyCharacter pc in GameContent.partyCharacters)
         {
             sw.WriteLine(PartyCharacterSaveDataSignifier + "," + pc.classID + "," + pc.health + "," + pc.mana + "," + pc.strength + "," + pc.agility + "," + pc.wisdom);
@@ -276,22 +307,7 @@ static public class AssignmentPart2
             }
         }
         sw.Close();
-        bool nameAlreadyExists = false;
-        foreach (NameAndIndex nameAndIndex in nameAndIndices)
-        {
-            if (nameAndIndex.name == GameContent.GetPartyNameFromInput())
-                nameAlreadyExists = true;
-        }
-        if (!nameAlreadyExists)
-        {
-            lastIndexUsed++;
-            nameAndIndices.AddLast(new NameAndIndex(lastIndexUsed, GameContent.GetPartyNameFromInput()));
-        }
-        else
-            Debug.Log("Name already exists. Please try another name!");
 
-        GameContent.RefreshUI();
-        SaveIndexManagementFile();
     }
 
     static public void NewPartyButtonPressed()
@@ -308,9 +324,9 @@ static public class AssignmentPart2
         string path = Application.dataPath + Path.DirectorySeparatorChar + IndexFilePath;
 
         StreamWriter writer = new StreamWriter(path);
-        writer.WriteLine("1," + lastIndexUsed);
+        writer.WriteLine(LastUsedIndexSignifier + "," + lastIndexUsed);
         foreach (NameAndIndex nameAndIndex in nameAndIndices)
-            writer.WriteLine("2,"+nameAndIndex.index+"," + nameAndIndex.name);
+            writer.WriteLine(IndexAndNameSignifier+","+nameAndIndex.index+"," + nameAndIndex.name);
         writer.Close();
     }
 
