@@ -221,15 +221,18 @@ static public class AssignmentPart2
             }
         }
 
+        loadPartyName();
+        GameContent.RefreshUI();
+
+    }
+    static public void loadPartyName()
+    {
         partyNames = new List<string>();
         foreach (NameAndIndex nameAndIndex in nameAndIndices)
         {
             partyNames.Add(nameAndIndex.name);
         }
-        GameContent.RefreshUI();
-
     }
-
     static public List<string> GetListOfPartyNames()
     {
         return partyNames;
@@ -294,8 +297,11 @@ static public class AssignmentPart2
         else
             Debug.Log("Name already exists. Please try another name!");
 
-        GameContent.RefreshUI();
+       
         SaveIndexManagementFile();
+        //for reloading drop down with new party name
+        loadPartyName();
+        GameContent.RefreshUI();
     }
 
     public static void SaveParty(string fileName)
