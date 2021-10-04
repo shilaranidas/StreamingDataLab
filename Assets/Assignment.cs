@@ -233,13 +233,21 @@ static public class AssignmentPart2
     static public List<string> GetListOfPartyNames()
     {
         return partyNames;
-
     }
 
     static public void LoadPartyDropDownChanged(string selectedName)
     {
         GameContent.partyCharacters.Clear();
-        string path = Application.dataPath + Path.DirectorySeparatorChar + "Party.txt";
+        int IndexToLoad = -1;
+        foreach (NameAndIndex nameAndIndex in nameAndIndices)
+        {
+            if(nameAndIndex.name== selectedName)
+            {
+                IndexToLoad = nameAndIndex.index;
+            }
+        }
+
+        string path = Application.dataPath + Path.DirectorySeparatorChar + IndexToLoad+".txt";
         //Read the text from directly from the test.txt file
         StreamReader reader = new StreamReader(path);
         string line = "";
