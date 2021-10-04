@@ -223,6 +223,24 @@ public class SystemManager : MonoBehaviour
         return partyNameInputField.GetComponentsInChildren<Text>()[1].text;
 
     }
+    public string GetSelectedPartyNameFromDropDown()
+    {
+        int menuIndex = loadPartyDropDown.GetComponent<Dropdown>().value;
+        List<Dropdown.OptionData> menuOptions = loadPartyDropDown.GetComponent<Dropdown>().options;
+        string value = menuOptions[menuIndex].text;
+        return value;
+    }
+    public void SetSelectedPartyNameFromDropDown()
+    {
+        loadPartyDropDown.GetComponent<Dropdown>().value = 0;
+    }
+    public void SetPartyNameFromInput(string PartyName)
+    {
+
+        Debug.Log(PartyName);
+        partyNameInputField.GetComponentsInChildren<Text>()[1].text= PartyName;
+
+    }
 
 }
 

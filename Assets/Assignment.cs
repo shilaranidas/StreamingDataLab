@@ -247,6 +247,8 @@ static public class AssignmentPart2
             if(nameAndIndex.name== selectedName)
             {
                 IndexToLoad = nameAndIndex.index;
+                GameContent.SetPartyNameFromInput(selectedName);
+                break;
             }
         }
 
@@ -285,6 +287,7 @@ static public class AssignmentPart2
                 nameAlreadyExists = true;
                 string fileName = Application.dataPath + Path.DirectorySeparatorChar +nameAndIndex.index +".txt";
                 SaveParty(fileName);
+                break;
             }
         }
         if (!nameAlreadyExists)
@@ -331,7 +334,28 @@ static public class AssignmentPart2
 
     static public void DeletePartyButtonPressed()
     {
-
+        Debug.Log("delete "+GameContent.GetSelectedPartyNameFromDropDown());
+        bool nameNotExists = false;
+        foreach (NameAndIndex nameAndIndex in nameAndIndices)
+        {
+            if (nameAndIndex.name == GameContent.GetSelectedPartyNameFromDropDown())
+            {
+                nameNotExists = true;
+                string fileName = Application.dataPath + Path.DirectorySeparatorChar + nameAndIndex.index + ".txt";
+                //SaveParty(fileName);
+                nameAndIndices.Remove(nameAndIndex);
+                if (File.Exists(fileName))
+                    File.Delete(fileName);
+                break;
+            }
+        }
+        if (!nameNotExists)
+            Debug.Log("Can't delete as this party is not exists");
+        SaveIndexManagementFile();
+        //for reloading drop down after removing party name
+        loadPartyName();
+        GameContent.SetSelectedPartyNameFromDropDown();
+        GameContent.RefreshUI();
     }
     static public void SaveIndexManagementFile()
     {
