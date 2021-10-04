@@ -246,8 +246,7 @@ static public class AssignmentPart2
         {
             if(nameAndIndex.name== selectedName)
             {
-                IndexToLoad = nameAndIndex.index;
-                GameContent.SetPartyNameFromInput(selectedName);
+                IndexToLoad = nameAndIndex.index;               
                 break;
             }
         }
@@ -329,7 +328,9 @@ static public class AssignmentPart2
 
     static public void NewPartyButtonPressed()
     {
+        GameContent.SetSelectedPartyNameFromDropDown();
         SaveIndexManagementFile();
+        GameContent.RefreshUI();
     }
 
     static public void DeletePartyButtonPressed()

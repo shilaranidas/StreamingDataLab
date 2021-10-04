@@ -234,13 +234,6 @@ public class SystemManager : MonoBehaviour
     {
         loadPartyDropDown.GetComponent<Dropdown>().value = 0;
     }
-    public void SetPartyNameFromInput(string PartyName)
-    {
-
-        Debug.Log(PartyName);
-        partyNameInputField.GetComponentsInChildren<Text>()[1].text= PartyName;
-
-    }
-
+    
 }
 
